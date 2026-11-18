@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+domain=$1
+
+check_subdomain() {
+    subdomain=$1
+
+    record=$(dig "$subdomain.$domain" +noall +answer | awk '{print $4, $5}')
+    read -r record_type destination <<< "$record"
+
+    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+}
+
+if [ "$2" ]; then
+    check_subdomain "$2"
+else
+    for subdomain in www lb-01 web-01 web-02
+    do
+        check_subdomain "$subdomain"
+    done
+fi
