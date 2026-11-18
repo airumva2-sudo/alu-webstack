@@ -4,11 +4,12 @@
 domain=$1
 
 check_subdomain() {
-    subdomain=$1
+    local subdomain=$1
+    local record
 
-    record=$(dig "$subdomain.$domain" +noall +answer | awk '{print $4, $5}')
-    record_type=$(echo "$record" | awk '{print $1}')
-    destination=$(echo "$record" | awk '{print $2}')
+    record=$(dig "$subdomain.$domain" +noall +answer | awk 'NF >= 5 {print $4, $5; exit}')
+
+    read -r record_type destination <<< "$record"
 
     echo "The subdomain $subdomain is a $record_type record and points to $destination"
 }
