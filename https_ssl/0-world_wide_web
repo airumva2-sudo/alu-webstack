@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Displays information about a domain's subdomains
 
 domain=$1
 
@@ -6,7 +7,8 @@ check_subdomain() {
     subdomain=$1
 
     record=$(dig "$subdomain.$domain" +noall +answer | awk '{print $4, $5}')
-    read -r record_type destination <<< "$record"
+    record_type=$(echo "$record" | awk '{print $1}')
+    destination=$(echo "$record" | awk '{print $2}')
 
     echo "The subdomain $subdomain is a $record_type record and points to $destination"
 }
